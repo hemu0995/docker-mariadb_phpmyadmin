@@ -1,40 +1,69 @@
 version: '3.8'
 
-services:
-  # db:
-  #   image: mysql:8.0
-  #   container_name: mysql_db
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: rootpassword
-  #     MYSQL_DATABASE: mydb
-  #     MYSQL_USER: user
-  #     MYSQL_PASSWORD: userpassword
-  #   ports:
-  #     - "3307:3306"
-  #   volumes:
-  #     - mysql_data:/var/lib/mysql
+# services:
+#   db:
+#     image: mysql:8.0
+#     container_name: mysql_db
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: rootpassword
+#       MYSQL_DATABASE: mydb
+#       MYSQL_USER: user
+#       MYSQL_PASSWORD: userpassword
+#     ports:
+#       - "3307:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
 
-  db:
-    image: mariadb:11
-    container_name: mariadb_db
+#   phpmyadmin:
+#     image: phpmyadmin/phpmyadmin
+#     container_name: phpmyadmin
+#     restart: always
+#     ports:
+#       - "8080:80"
+#     environment:
+#       PMA_HOST: mysql
+#       PMA_USER: user
+#       PMA_PASSWORD: userpassword
+#     depends_on: 
+#       - db
+
+# volumes:
+#   mysql_data: 
+
+
+#####
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
     restart: always
-    # environment:
-      
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - mynetwork
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     restart: always
     ports:
       - "8080:80"
     environment:
-      PMA_HOST: mysql
-      PMA_USER: user
-      PMA_PASSWORD: userpassword
-    depends_on: 
-      - db
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: rootpassword
+    networks:
+      - mynetwork
 
 volumes:
-  mysql_data: 
+  mariadb_data:
 
+networks:
+  mynetwork:
